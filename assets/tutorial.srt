@@ -1,87 +1,76 @@
 1
-00:00:00,000 --> 00:00:09,768
-Let's take a guided tour of LoTR — Logic-of-Thought Routing — a lightweight plug-in that improves how large language models reason, from the inside.
+00:00:00,400 --> 00:00:09,568
+Let's understand LoTR — Logic-of-Thought Routing — a plug-and-play way to make language models reason better, with frozen weights and no fine-tuning.
 
 2
-00:00:10,188 --> 00:00:17,244
-First, the problem. Today's reasoning methods work almost entirely from the outside.
+00:00:09,748 --> 00:00:16,708
+The shift: don't just tell the model how to reason on the outside — route each step through the internal pathway its logic needs.
 
 3
-00:00:17,664 --> 00:00:29,112
-Chain-of-thought, plan-and-solve, self-consistency, best-of-N, constrained beam search, tree search — each one prescribes a better external procedure for the model to follow.
+00:00:17,128 --> 00:00:29,848
+Modern reasoning leans on external strategies — chain-of-thought, plan-and-solve, self-refine, self-consistency, best-of-N, constrained beam, tree search. They all prescribe how the model should reason.
 
 4
-00:00:29,532 --> 00:00:39,828
-But they all share one blind spot. None of them ask whether the model's own internal computation actually matches the logic the current step needs.
+00:00:30,268 --> 00:00:39,700
+But whatever strategy you prescribe, the model runs it through the same fixed internal pathway — never checking if that pathway matches the logic the strategy induced.
 
 5
-00:00:40,248 --> 00:00:50,664
-A transformer reasons through attention heads. At any step, some heads support the current move, some are irrelevant, and some actively interfere.
+00:00:39,880 --> 00:00:46,144
+So part of the benefit is lost — a strong procedure run by a static interior that never adapts.
 
 6
-00:00:51,084 --> 00:01:01,980
-So a single fixed set of active heads is suboptimal. The pathway that is right for decomposing a problem is not the pathway that is right for verifying an answer.
+00:00:46,564 --> 00:00:57,028
+LoTR's observation: reasoning isn't uniform inside. Different steps put the model into different logic states — recurring internal execution regimes.
 
 7
-00:01:02,400 --> 00:01:14,280
-LoTR's idea is simple. At each step, read the model's internal state, infer which logic regime it is in, and softly re-route its attention heads to match.
+00:00:57,208 --> 00:01:03,040
+And each paradigm occupies these states differently — logic is a shared internal basis.
 
 8
-00:01:14,700 --> 00:01:27,180
-It does not replace chain-of-thought or search. It plugs in underneath them, adjusting the internal pathway while the outer scaffold stays exactly the same, and the backbone weights stay frozen.
+00:01:03,460 --> 00:01:12,316
+Each logic state couples to a distinct set of attention heads — a stable pathway template. Read the state, and you know which heads carry the next step.
 
 9
-00:01:27,600 --> 00:01:38,520
-The method has two stages. Offline, we compile a compact basis of logic states. Online, we simply read, and route.
+00:01:12,736 --> 00:01:22,192
+Offline, LoTR pools step readouts across paradigms into six logic states, and a light linear probe learns to read the current state at each layer.
 
 10
-00:01:38,940 --> 00:01:47,820
-Offline, we run frozen models across many paradigms and tasks, and read a sentence-level state vector at every reasoning step.
+00:01:22,372 --> 00:01:30,412
+Then it learns one head-gating template per state — keeping heads that help success, damping those tied to failure — with the model frozen.
 
 11
-00:01:48,240 --> 00:02:01,536
-Clustering these states reveals a small set of recurring logic regimes — explore, consolidate, verify, exploit, and resolve — that show up again and again, whatever the task or the outer method.
+00:01:30,832 --> 00:01:40,384
+Online, it's a simple plug-in. At each sentence boundary, the probe infers the state mixture and blends the cached templates into soft gates over attention heads.
 
 12
-00:02:01,956 --> 00:02:13,884
-For each regime we learn two things: a lightweight per-layer probe that recognises it, and a routing template that says how strongly each attention head should participate when that regime is active.
+00:01:40,564 --> 00:01:46,588
+The prompt and search stay untouched — only the internal pathway adapts, step by step.
 
 13
-00:02:14,304 --> 00:02:27,216
-Online, at every sentence boundary, the probes read the current state and output soft mixing weights over the regimes. Because they are sigmoids, several regimes can be active at once.
+00:01:47,008 --> 00:01:58,288
+Does it work? On eight benchmarks by eight paradigms, LoTR lifts the average by two-point-seven points — a five-point-four percent relative gain — and every benchmark improves.
 
 14
-00:02:27,636 --> 00:02:37,116
-Those weights blend the cached templates into a single gate matrix over all the heads, which is clipped to a valid range and applied to the next step.
+00:01:58,468 --> 00:02:04,492
+It helps or ties in fifty-one of sixty-four cells — across every paradigm tested.
 
 15
-00:02:37,536 --> 00:02:53,640
-The effect is gentle. Most heads — the logic-insensitive backbone — stay near identity. Only the few heads that clash with the active regime get turned down. No search, no planner, no extra weights.
+00:02:04,912 --> 00:02:16,048
+And it's almost free: no extra samples or search calls — total decoding tokens shift by just zero-point-one-five percent. The gain is from routing, not a bigger budget.
 
 16
-00:02:54,060 --> 00:03:05,652
-So, does it help? Across three backbones, eight benchmarks, and eight reasoning paradigms, LoTR lifts average accuracy by nearly eight percent.
+00:02:16,468 --> 00:02:27,292
+It transfers, too — plus two-point-one points on a fourteen-billion model, nearly a point on a mixture-of-experts model — and beats the mean of four intervention baselines on every backbone.
 
 17
-00:03:06,072 --> 00:03:18,096
-The gains are largest exactly where reasoning is hardest. On Llama, chain-of-thought, plan-and-solve, self-consistency and best-of-N each jump by around nine points.
+00:02:27,712 --> 00:02:36,976
+Why? Collapse the six states into one, or steer without reading the state, and the gains fade. It's the logic-indexed routing doing the work.
 
 18
-00:03:18,516 --> 00:03:29,604
-And it is consistent across backbones — a sixteen-point paradigm-averaged improvement on Llama-3.1-8B, with steady gains on Qwen and Mixtral too.
+00:02:37,396 --> 00:02:45,076
+The takeaway is a change of control: don't only prescribe how to reason — match the internal pathway to the logic each step needs.
 
 19
-00:03:30,024 --> 00:03:38,592
-Crucially, this is not brute force. LoTR adds only about three percent more reasoning tokens overall.
+00:02:45,256 --> 00:02:55,264
+LoTR reads the state, routes the right heads, and plugs into any reasoning paradigm — frozen, cheap, adaptive. Route the pathway to the logic.
 
-20
-00:03:39,012 --> 00:03:47,868
-Because it routes rather than re-reasons, it can even cut latency — around eleven percent on Llama, and twelve percent on Mixtral.
-
-21
-00:03:48,288 --> 00:04:04,896
-Ablations confirm the mechanism. Collapse the logic basis, drop the soft targets, or fall back to one global template, and the gain erodes. What matters is matching the current logic state to the right template, not generic reweighting.
-
-22
-00:04:05,316 --> 00:04:28,044
-The takeaway: reasoning quality is not only about the scaffold you wrap around a model. It is about whether the model uses the right internal pathway at each step. LoTR gives you that — a small bank of probes and templates that route logic on the fly. The paper, the code, and the interactive project page are linked on screen.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LoTR | Logic-of-Thought Routing</title>
-  <meta name="description" content="LoTR strengthens external reasoning paradigms by logic-conditioned internal pathway routing.">
+  <meta name="description" content="LoTR strengthens external reasoning paradigms by logic-conditioned internal pathway routing — plug-and-play, frozen weights, inference-time.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
@@ -35,10 +35,11 @@
     <section class="hero container">
       <div class="hero-copy">
         <p class="pill">Plug-and-Play Reasoning Router</p>
-        <h1>LoTR: Logic-of-Thought Routing for LLM Reasoning</h1>
+        <h1>LoTR: Logic-of-Thought Routing for Plug-and-Play Reasoning of LLMs</h1>
         <p class="subtitle">
-          LoTR is a lightweight module that complements external reasoning strategies by routing internal
-          attention-head pathways according to the current logic state of each reasoning step.
+          External reasoning paradigms prescribe <em>how</em> a model should reason, but leave its internal computation
+          pathway fixed. LoTR strengthens any paradigm by routing the model's internal attention-head pathways to the
+          <strong>logic state</strong> each step induces — with <strong>frozen weights</strong>, at inference time.
         </p>
         <div class="author-hero">
           <p class="author-hero-names">
@@ -59,36 +60,36 @@
         </div>
       </div>
       <figure class="card figure-card hero-figure">
-        <img src="./assets/intro_main.png" alt="LoTR end-to-end plug-and-play routing pipeline" data-full="./assets/intro_main.png" loading="eager">
-        <figcaption>Figure. LoTR as plug-and-play reasoning through logic-conditioned internal pathway routing.</figcaption>
+        <img src="./assets/intro_main.png" alt="LoTR overview: external paradigms, frozen LLM + probe, offline logic-state compilation, and online plug-in head routing" data-full="./assets/intro_main.png" loading="eager">
+        <figcaption>Figure. LoTR as plug-and-play reasoning through logic-conditioned internal pathway routing: offline it compiles a basis of logic states and per-state head templates; online a probe reads the current state and softly routes attention heads for the next step.</figcaption>
       </figure>
 
       <div class="hero-bottom grid2">
         <figure class="card figure-card hero-mini-left">
-          <img src="./assets/intro_main_paradigm_radar_three_models.png" alt="Paradigm-level accuracy radar across backbones" data-full="./assets/intro_main_paradigm_radar_three_models.png" loading="lazy">
-          <figcaption>Figure. Paradigm-level accuracy profile across three backbones.</figcaption>
+          <img src="./assets/intro_main_paradigm_radar_three_models.png" alt="Llama macro score across eight paradigms: Identity vs LoTR" data-full="./assets/intro_main_paradigm_radar_three_models.png" loading="lazy">
+          <figcaption>Figure. Llama-3.1-8B matched macro across the eight reasoning paradigms — LoTR (solid) vs Identity (dashed).</figcaption>
         </figure>
         <figure class="card figure-card hero-mini-right">
-          <img src="./assets/intro_efficiency_tokens_latency_bar_line.png" alt="Reasoning tokens and latency per backbone" data-full="./assets/intro_efficiency_tokens_latency_bar_line.png" loading="lazy">
-          <figcaption>Figure. Reasoning tokens and latency per backbone under LoTR-enhanced paradigms.</figcaption>
+          <img src="./assets/intro_efficiency_tokens_latency_bar_line.png" alt="Matched-panel comparison: Identity, plug-in mean, and LoTR across three backbones" data-full="./assets/intro_efficiency_tokens_latency_bar_line.png" loading="lazy">
+          <figcaption>Figure. Matched panels across three backbones — Identity, four-method plug-in mean, and LoTR; lines show LoTR's margins over each.</figcaption>
         </figure>
       </div>
       <div class="hero-insight grid2">
         <article class="card">
           <h3>Cross-Setting Effectiveness</h3>
           <p>
-            Across <strong>3 backbones</strong>, <strong>8 benchmarks</strong>, and <strong>8 reasoning paradigms</strong>,
-            LoTR improves average accuracy by <strong>7.93%</strong> with only <strong>+3.18%</strong> reasoning tokens overall.
-            The largest relative uplift appears on Llama-3.1-8B (<strong>16.67%</strong>), showing that logic-state-conditioned
-            pathway routing can unlock substantial gains under diverse wrappers.
+            Across <strong>3 backbones</strong>, <strong>10 benchmarks</strong>, and <strong>8 reasoning paradigms</strong>,
+            LoTR improves model-level matched macros by <strong>+3.60% relative</strong> on average. On the primary
+            Llama-3.1-8B study (<strong>8 benchmarks × 8 paradigms</strong>) it gains <strong>+2.66 points (+5.37% relative)</strong>,
+            improving <strong>every benchmark-level macro</strong> and helping or tying <strong>51 of 64</strong> cells.
           </p>
         </article>
         <article class="card">
-          <h3>Practical Efficiency Profile</h3>
+          <h3>Almost-Free Efficiency</h3>
           <p>
-            LoTR is not a heavy re-reasoning system: it adds a lightweight probe-and-route controller and still achieves
-            latency reductions on two backbones (<strong>-10.76%</strong> on Llama, <strong>-12.15%</strong> on Mixtral).
-            This indicates that better internal pathway matching can improve quality without relying on brute-force compute growth.
+            LoTR adds <strong>no extra samples and no extra search calls</strong>. On the exact 64-cell panel it changes
+            total completion tokens by only <strong>+0.15%</strong> (final-call length <strong>−0.43%</strong>). The accuracy
+            gain comes from <strong>logic-indexed routing</strong>, not from a larger decoding budget.
           </p>
         </article>
       </div>
@@ -96,31 +97,37 @@
 
     <section class="container metrics">
       <article><h3>3</h3><p>Backbones</p></article>
-      <article><h3>8</h3><p>Benchmarks</p></article>
-      <article><h3>8</h3><p>Reasoning paradigms evaluated</p></article>
-      <article><h3>7.93%</h3><p>Overall average accuracy gain</p></article>
-      <article><h3>16.67%</h3><p>Llama-3.1-8B gain</p></article>
-      <article><h3>4.25%</h3><p>Qwen2.5-14B gain</p></article>
-      <article><h3>4.94%</h3><p>Mixtral-8x7B gain</p></article>
-      <article><h3>+3.18%</h3><p>Token overhead overall</p></article>
-      <article><h3>-10.76%</h3><p>Latency on Llama</p></article>
-      <article><h3>-12.15%</h3><p>Latency on Mixtral</p></article>
+      <article><h3>10</h3><p>Benchmarks</p></article>
+      <article><h3>8</h3><p>Reasoning paradigms</p></article>
+      <article><h3>K=6</h3><p>Logic states</p></article>
+      <article><h3>+2.66</h3><p>Llama macro gain (pts)</p></article>
+      <article><h3>+5.37%</h3><p>Relative gain</p></article>
+      <article><h3>+0.15%</h3><p>Token overhead (all calls)</p></article>
+      <article><h3>+2.12</h3><p>Qwen2.5-14B transfer (pts)</p></article>
+      <article><h3>+0.93</h3><p>Mixtral-8x7B transfer (pts)</p></article>
+      <article><h3>+2.86</h3><p>vs. plug-in mean (Llama)</p></article>
     </section>
 
     <section id="abstract" class="container section">
       <h2>Abstract</h2>
       <article class="card">
         <p>
-          Existing reasoning paradigms prescribe stronger external procedures, but they rarely control whether the model's
-          <strong>internal computation pathway</strong> matches the <strong>dynamic logic required by each step</strong>.
+          Reasoning paradigms prescribe <strong>external strategies</strong> — step-by-step, iterative revision,
+          search-and-sampling — that guide <em>how</em> a model reasons. They rarely consider whether the model's
+          <strong>internal computation pathway</strong> is well matched to the dynamic reasoning-logic state induced by the
+          strategy, leaving part of each paradigm's potential unrealized.
         </p>
         <p>
-          LoTR addresses this gap with <strong>logic-conditioned routing</strong>: it identifies logic-state mixtures from internal
-          information transfer and softly composes <strong>state-specific head-pathway templates</strong> online.
+          We propose <strong>Logic-of-Thought Routing (LoTR)</strong>, a plug-and-play module that strengthens existing
+          paradigms through <strong>logic-conditioned internal pathway routing</strong>: it identifies dynamic logic states
+          from the model's internal information transfer, couples them with attention-head pathway patterns, and uses a
+          <strong>lightweight probe</strong> to infer the current logic-state mixture and softly route the corresponding pathway.
         </p>
         <p>
-          The result is a <strong>plug-and-play module</strong> that improves diverse reasoning wrappers
-          <strong>without changing frozen backbone weights</strong> or redesigning external reasoning programs.
+          Across three backbones, ten benchmarks, and eight reasoning paradigms, LoTR improves model-level matched macros by
+          <strong>3.60% relative</strong> on average. On the primary eight-benchmark, eight-paradigm Llama study it gains
+          <strong>5.37%</strong> with only <strong>+0.15%</strong> total completion tokens, and it outperforms the mean of four
+          plug-in intervention baselines on all three comparison panels — all with <strong>frozen backbone weights</strong>.
         </p>
       </article>
     </section>
@@ -129,49 +136,59 @@
       <h2>Method</h2>
       <div class="grid3 method-flow">
         <article class="card">
-          <h3>1) Offline Logic Basis</h3>
-          <p>Cluster sentence-level internal readouts from multiple paradigms to build a compact recurring logic-state basis.</p>
-          <p class="note">Output: logic centroids and soft state targets.</p>
+          <h3>1) Offline Logic Basis (K=6)</h3>
+          <p>Pool sentence-level internal readouts from all paradigms and cluster them into a compact basis of six recurring logic states, with distance-based soft targets.</p>
+          <p class="note">Output: six logic-state centroids + soft state targets.</p>
         </article>
         <article class="card">
-          <h3>2) Probe Learning</h3>
-          <p>Train lightweight layer-wise probes to infer state mixtures from current sentence representations.</p>
-          <p class="note">Output: online logic-state occupancy estimates.</p>
+          <h3>2) Layer-wise Probes</h3>
+          <p>Train lightweight per-layer linear probes that read a <em>non-exclusive</em> state mixture from the current sentence representation, supervised by soft targets.</p>
+          <p class="note">Output: online logic-state occupancy at each routed layer.</p>
         </article>
         <article class="card">
-          <h3>3) Pathway Routing</h3>
-          <p>Compose state-coupled head templates with probe outputs and softly route attention pathways per step.</p>
-          <p class="note">Output: logic-matched internal execution under fixed external strategy.</p>
+          <h3>3) Logic–Pathway Templates</h3>
+          <p>Learn one head-gating template per state — preserving heads that help successful reasoning, damping those tied to failures, with an identity regularizer — while the LM stays frozen.</p>
+          <p class="note">Output: cached per-state templates over the layer×head grid.</p>
         </article>
       </div>
+
+      <article class="card">
+        <h3>Online Plug-in Routing</h3>
+        <p>
+          As reasoning unfolds, LoTR evaluates the probes only at <strong>sentence boundaries</strong>. It composes the pathway
+          for the next step by mixing the cached state templates according to the probe activations, applying the resulting soft
+          gates directly to attention-head outputs. The external prompt or search procedure is left <strong>completely unchanged</strong>
+          — only the internal execution pathway adapts, step by step, to the logic the step actually requires.
+        </p>
+      </article>
 
       <div class="grid2">
         <figure class="card figure-card">
           <img src="./assets/logicstate_paradigm_trajectories_pca2_grid.png" alt="Logic states across reasoning paradigms" data-full="./assets/logicstate_paradigm_trajectories_pca2_grid.png" loading="lazy">
-          <figcaption>Figure. Different reasoning paradigms occupy different logic-state regions and transition patterns.</figcaption>
+          <figcaption>Figure. Different reasoning paradigms occupy different regions and transition patterns over the same latent logic-state space.</figcaption>
         </figure>
         <figure class="card figure-card">
-          <img src="./assets/lotr_pathway_patterns.png" alt="State-wise head pathway patterns" data-full="./assets/lotr_pathway_patterns.png" loading="lazy">
-          <figcaption>Figure. Distinct recurring logic states couple to distinct head-level routing templates.</figcaption>
+          <img src="./assets/iclr2027_final_k6_state_by_paradigm.png" alt="Logic-state occupancy by paradigm (K=6)" data-full="./assets/iclr2027_final_k6_state_by_paradigm.png" loading="lazy">
+          <figcaption>Figure. Occupancy of the six logic states by paradigm — some paradigms concentrate on a few states, others spread across many.</figcaption>
         </figure>
       </div>
 
       <div class="grid2">
         <figure class="card figure-card">
-          <img src="./assets/logicstate_paradigm.png" alt="Trajectory-conditioned logic-state marginals" data-full="./assets/logicstate_paradigm.png" loading="lazy">
-          <figcaption>Figure. Trajectory-conditioned logic-state marginals under K=5 logic basis.</figcaption>
+          <img src="./assets/iclr2027_final_k6_pathway_templates.png" alt="Per-state head-gating templates over the layer-head grid" data-full="./assets/iclr2027_final_k6_pathway_templates.png" loading="lazy">
+          <figcaption>Figure. Each logic state couples to a distinct head-gating template over the layer × attention-head grid.</figcaption>
         </figure>
         <figure class="card figure-card">
-          <img src="./assets/app_k_sweep.png" alt="Offline clustering diagnostics across K choices" data-full="./assets/app_k_sweep.png" loading="lazy">
-          <figcaption>Figure. Offline clustering diagnostics across K choices for logic-state basis selection.</figcaption>
+          <img src="./assets/lotr_pathway_patterns.png" alt="Stable pathway patterns under different logic states" data-full="./assets/lotr_pathway_patterns.png" loading="lazy">
+          <figcaption>Figure. Distinct recurring logic states couple to distinct, reusable head-level routing patterns.</figcaption>
         </figure>
       </div>
       <article class="card">
         <h3>Method-Level Insight</h3>
         <ul>
-          <li>Logic states are not static labels; they are recurring execution regimes inferred from sentence-level internal transfer.</li>
-          <li>Routing quality depends on both state separability and stable pathway templates; the K-sweep figure shows why moderate K is preferred.</li>
-          <li>The online controller works because it composes cached pathway templates with current state mixture, keeping inference overhead lightweight.</li>
+          <li>Logic states are recurring, probe-identifiable execution regimes inferred from sentence-level internal transfer — not static labels.</li>
+          <li>State readout stays non-exclusive (sigmoid, not simplex), so several execution regimes can co-activate within one step.</li>
+          <li>The online controller is lightweight: one probe evaluation per layer at each sentence boundary, then a weighted mix over cached templates.</li>
         </ul>
       </article>
     </section>
@@ -179,77 +196,79 @@
     <section id="results" class="container section">
       <h2>Main Results</h2>
       <article class="card">
-        <h3>Llama-3.1-8B Paradigm Averages (Accuracy %)</h3>
+        <h3>Llama-3.1-8B Paradigm Macros (Accuracy %, benchmarks weighted equally)</h3>
         <div class="table-scroll">
           <table class="wide-table compact">
             <thead>
               <tr>
                 <th>Paradigm</th>
-                <th>Baseline</th>
-                <th>Best Prior Plug-in</th>
-                <th>LoTR</th>
-                <th>Gain vs Baseline</th>
+                <th>Identity</th>
+                <th>+ LoTR</th>
+                <th>Δ (pts)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Vanilla</td><td>45.8</td><td>47.6</td><td class="best">48.3</td><td>+2.5</td></tr>
-              <tr><td>Chain-of-Thought</td><td>34.2</td><td>43.4</td><td class="best">43.8</td><td>+9.6</td></tr>
-              <tr><td>Plan-and-Solve</td><td>24.4</td><td>30.5</td><td class="best">32.8</td><td>+8.4</td></tr>
-              <tr><td>Self-Refine</td><td>43.7</td><td>47.2</td><td class="best">47.3</td><td>+3.6</td></tr>
-              <tr><td>Self-Consistency</td><td>31.6</td><td>39.7</td><td class="best">41.2</td><td>+9.6</td></tr>
-              <tr><td>Best-of-N</td><td>31.3</td><td>39.8</td><td class="best">40.2</td><td>+8.9</td></tr>
-              <tr><td>Constrained Beam</td><td>41.1</td><td>43.3</td><td class="best">45.3</td><td>+4.2</td></tr>
-              <tr><td>MCTS</td><td>40.7</td><td>43.4</td><td class="best">43.2</td><td>+2.5</td></tr>
+              <tr><td>Vanilla</td><td>47.9</td><td class="best">48.0</td><td>+0.13</td></tr>
+              <tr><td>Chain-of-Thought</td><td>49.9</td><td class="best">54.5</td><td>+4.61</td></tr>
+              <tr><td>Plan-and-Solve</td><td>48.0</td><td class="best">49.5</td><td>+1.54</td></tr>
+              <tr><td>Self-Refine</td><td>52.7</td><td class="best">56.8</td><td>+4.13</td></tr>
+              <tr><td>Self-Consistency</td><td>47.5</td><td class="best">52.1</td><td>+4.64</td></tr>
+              <tr><td>Best-of-N</td><td>45.3</td><td class="best">48.3</td><td>+3.02</td></tr>
+              <tr><td>Constrained Beam</td><td>55.6</td><td class="best">57.6</td><td>+1.97</td></tr>
+              <tr><td>Mini-MCTS</td><td>49.6</td><td class="best">50.8</td><td>+1.25</td></tr>
+              <tr class="best-row"><td>Overall macro</td><td>49.5</td><td>52.2</td><td>+2.66</td></tr>
             </tbody>
           </table>
         </div>
+        <p class="note">Improves 44 of 64 cells and ties 7 more (51/64 helped-or-tied); every benchmark-level macro improves.</p>
       </article>
 
       <article class="card">
-        <h3>Llama-3.1-8B Full Benchmark Table (Baseline vs LoTR)</h3>
+        <h3>Llama-3.1-8B Full Benchmark Table (Identity vs LoTR)</h3>
         <div class="table-scroll">
           <table class="wide-table">
             <thead>
               <tr>
                 <th>Paradigm</th>
                 <th>Variant</th>
-                <th>GSM8K</th>
-                <th>MATH</th>
                 <th>BoolQ</th>
+                <th>DROP</th>
                 <th>HumanEval</th>
+                <th>QASC</th>
+                <th>ScienceQA</th>
                 <th>MMLU</th>
-                <th>FOLIO</th>
-                <th>HotpotQA</th>
                 <th>NarrativeQA</th>
+                <th>FOLIO</th>
                 <th>Average</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Vanilla</td><td>Baseline</td><td>78.9</td><td>54.1</td><td>74.7</td><td>62.0</td><td>40.9</td><td>29.1</td><td>7.1</td><td>19.8</td><td>45.8</td></tr>
-              <tr class="best-row"><td>Vanilla</td><td>+ LoTR</td><td>82.0</td><td>57.0</td><td>82.2</td><td>62.0</td><td>45.4</td><td>30.0</td><td>7.6</td><td>19.9</td><td>48.3</td></tr>
-              <tr><td>Chain-of-Thought</td><td>Baseline</td><td>75.1</td><td>55.4</td><td>32.8</td><td>53.0</td><td>33.2</td><td>18.0</td><td>2.0</td><td>4.2</td><td>34.2</td></tr>
-              <tr class="best-row"><td>Chain-of-Thought</td><td>+ LoTR</td><td>79.6</td><td>62.5</td><td>39.0</td><td>53.0</td><td>37.2</td><td>18.7</td><td>29.4</td><td>30.9</td><td>43.8</td></tr>
-              <tr><td>Plan-and-Solve</td><td>Baseline</td><td>68.5</td><td>34.0</td><td>13.5</td><td>24.0</td><td>29.7</td><td>20.9</td><td>1.7</td><td>2.8</td><td>24.4</td></tr>
-              <tr class="best-row"><td>Plan-and-Solve</td><td>+ LoTR</td><td>72.2</td><td>39.2</td><td>20.0</td><td>24.0</td><td>32.8</td><td>21.7</td><td>21.4</td><td>31.0</td><td>32.8</td></tr>
-              <tr><td>Self-Refine</td><td>Baseline</td><td>69.6</td><td>38.4</td><td>68.2</td><td>50.0</td><td>56.4</td><td>29.8</td><td>15.8</td><td>21.6</td><td>43.7</td></tr>
-              <tr class="best-row"><td>Self-Refine</td><td>+ LoTR</td><td>75.8</td><td>46.0</td><td>71.5</td><td>50.0</td><td>58.4</td><td>30.5</td><td>17.3</td><td>29.0</td><td>47.3</td></tr>
-              <tr><td>Self-Consistency</td><td>Baseline</td><td>79.7</td><td>47.7</td><td>40.1</td><td>35.0</td><td>24.6</td><td>19.4</td><td>1.9</td><td>4.1</td><td>31.6</td></tr>
-              <tr class="best-row"><td>Self-Consistency</td><td>+ LoTR</td><td>84.4</td><td>55.2</td><td>41.8</td><td>41.0</td><td>32.0</td><td>18.7</td><td>26.0</td><td>30.7</td><td>41.2</td></tr>
-              <tr><td>Best-of-N</td><td>Baseline</td><td>79.6</td><td>46.8</td><td>39.3</td><td>35.0</td><td>24.9</td><td>19.1</td><td>1.9</td><td>4.0</td><td>31.3</td></tr>
-              <tr class="best-row"><td>Best-of-N</td><td>+ LoTR</td><td>85.2</td><td>53.5</td><td>39.2</td><td>34.0</td><td>32.2</td><td>20.2</td><td>26.7</td><td>31.0</td><td>40.2</td></tr>
-              <tr><td>Constrained Beam</td><td>Baseline</td><td>43.1</td><td>26.4</td><td>80.4</td><td>52.4</td><td>45.4</td><td>38.3</td><td>15.7</td><td>27.2</td><td>41.1</td></tr>
-              <tr class="best-row"><td>Constrained Beam</td><td>+ LoTR</td><td>46.8</td><td>37.2</td><td>84.8</td><td>55.0</td><td>53.0</td><td>40.9</td><td>14.9</td><td>29.7</td><td>45.3</td></tr>
-              <tr><td>MCTS</td><td>Baseline</td><td>51.5</td><td>28.0</td><td>75.0</td><td>54.0</td><td>42.6</td><td>34.1</td><td>13.2</td><td>26.9</td><td>40.7</td></tr>
-              <tr class="best-row"><td>MCTS</td><td>+ LoTR</td><td>52.6</td><td>29.0</td><td>82.2</td><td>58.0</td><td>46.8</td><td>34.5</td><td>13.6</td><td>28.6</td><td>43.2</td></tr>
+              <tr><td>Vanilla</td><td>Identity</td><td>80.0</td><td>7.9</td><td>68.0</td><td>38.4</td><td>68.0</td><td>46.0</td><td>25.2</td><td>49.5</td><td>47.9</td></tr>
+              <tr class="best-row"><td>Vanilla</td><td>+ LoTR</td><td>80.0</td><td>7.6</td><td>70.0</td><td>38.4</td><td>68.0</td><td>45.6</td><td>24.9</td><td>49.5</td><td>48.0</td></tr>
+              <tr><td>Chain-of-Thought</td><td>Identity</td><td>75.5</td><td>11.3</td><td>54.0</td><td>38.4</td><td>73.6</td><td>59.2</td><td>42.8</td><td>44.6</td><td>49.9</td></tr>
+              <tr class="best-row"><td>Chain-of-Thought</td><td>+ LoTR</td><td>79.5</td><td>13.9</td><td>58.0</td><td>48.4</td><td>76.4</td><td>58.4</td><td>49.1</td><td>52.5</td><td>54.5</td></tr>
+              <tr><td>Plan-and-Solve</td><td>Identity</td><td>72.5</td><td>10.7</td><td>34.0</td><td>45.2</td><td>78.4</td><td>48.0</td><td>46.4</td><td>48.5</td><td>48.0</td></tr>
+              <tr class="best-row"><td>Plan-and-Solve</td><td>+ LoTR</td><td>74.0</td><td>14.0</td><td>32.0</td><td>44.4</td><td>81.6</td><td>53.2</td><td>49.3</td><td>47.5</td><td>49.5</td></tr>
+              <tr><td>Self-Refine</td><td>Identity</td><td>72.5</td><td>27.1</td><td>48.0</td><td>55.2</td><td>77.6</td><td>59.6</td><td>39.7</td><td>41.6</td><td>52.7</td></tr>
+              <tr class="best-row"><td>Self-Refine</td><td>+ LoTR</td><td>73.5</td><td>31.7</td><td>58.0</td><td>62.0</td><td>83.2</td><td>60.4</td><td>43.9</td><td>41.6</td><td>56.8</td></tr>
+              <tr><td>Self-Consistency</td><td>Identity</td><td>72.0</td><td>14.3</td><td>42.0</td><td>46.4</td><td>74.8</td><td>46.0</td><td>41.7</td><td>42.6</td><td>47.5</td></tr>
+              <tr class="best-row"><td>Self-Consistency</td><td>+ LoTR</td><td>80.0</td><td>17.9</td><td>40.0</td><td>47.6</td><td>82.4</td><td>54.4</td><td>43.0</td><td>51.5</td><td>52.1</td></tr>
+              <tr><td>Best-of-N</td><td>Identity</td><td>72.5</td><td>13.4</td><td>44.0</td><td>44.8</td><td>77.2</td><td>52.8</td><td>25.0</td><td>32.7</td><td>45.3</td></tr>
+              <tr class="best-row"><td>Best-of-N</td><td>+ LoTR</td><td>78.0</td><td>16.2</td><td>50.0</td><td>48.4</td><td>78.0</td><td>57.6</td><td>29.6</td><td>28.7</td><td>48.3</td></tr>
+              <tr><td>Constrained Beam</td><td>Identity</td><td>78.5</td><td>33.3</td><td>62.0</td><td>48.0</td><td>72.4</td><td>50.4</td><td>50.9</td><td>49.5</td><td>55.6</td></tr>
+              <tr class="best-row"><td>Constrained Beam</td><td>+ LoTR</td><td>82.0</td><td>31.5</td><td>62.0</td><td>49.6</td><td>77.6</td><td>56.8</td><td>49.7</td><td>51.5</td><td>57.6</td></tr>
+              <tr><td>Mini-MCTS</td><td>Identity</td><td>79.5</td><td>20.5</td><td>52.0</td><td>40.0</td><td>66.8</td><td>48.0</td><td>47.2</td><td>42.6</td><td>49.6</td></tr>
+              <tr class="best-row"><td>Mini-MCTS</td><td>+ LoTR</td><td>79.5</td><td>23.4</td><td>58.0</td><td>40.8</td><td>67.2</td><td>51.2</td><td>44.8</td><td>41.6</td><td>50.8</td></tr>
             </tbody>
           </table>
         </div>
+        <p class="note">Metrics are each benchmark's native score: accuracy (BoolQ, QASC, ScienceQA-text, MMLU, FOLIO), token-level F1 (DROP, NarrativeQA), and Pass@1 (HumanEval).</p>
       </article>
 
       <article class="card">
         <h3>Click to Explore More Experimental Blocks</h3>
         <div class="result-controls">
-          <button class="btn btn-soft result-toggle active" type="button" data-target="panelBackbones">Cross-Backbone Summary</button>
+          <button class="btn btn-soft result-toggle active" type="button" data-target="panelBackbones">Transfer & Baselines</button>
           <button class="btn btn-soft result-toggle" type="button" data-target="panelBenchmarks">Benchmark Coverage</button>
         </div>
 
@@ -259,20 +278,42 @@
               <thead>
                 <tr>
                   <th>Backbone</th>
-                  <th>Evaluation scope</th>
-                  <th>Quality effect</th>
-                  <th>Efficiency effect</th>
-                  <th>Paradigm-Averaged Improvement</th>
+                  <th>Evaluation</th>
+                  <th>Identity</th>
+                  <th>LoTR</th>
+                  <th>Δ</th>
+                  <th>W/T/L</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td>Llama-3.1-8B</td><td>8 paradigms × 8 benchmarks</td><td>Largest overall uplift, especially under CoT/PS/SC/BoN wrappers</td><td>Latency reduced by 10.76% in aggregate comparison</td><td>16.67%</td></tr>
-                <tr><td>Qwen2.5-14B</td><td>8 paradigms × 8 benchmarks</td><td>Stable gains under diverse wrappers with stronger realization of logic-sensitive tasks</td><td>Token usage reduced by 2.28% on backbone-level summary</td><td>4.25%</td></tr>
-                <tr><td>Mixtral-8x7B</td><td>8 paradigms × 8 benchmarks</td><td>Consistent quality gains despite sparse MoE execution characteristics</td><td>Latency reduced by 12.15% on backbone-level summary</td><td>4.94%</td></tr>
+                <tr class="best-row"><td>Llama-3.1-8B</td><td>8 datasets × 8 paradigms</td><td>49.5</td><td>52.2</td><td>+2.66</td><td>44/7/13</td></tr>
+                <tr><td>Qwen2.5-14B</td><td>6 datasets; Self-Refine</td><td>75.0</td><td>77.1</td><td>+2.12</td><td>4/1/1</td></tr>
+                <tr><td>Mixtral-8x7B</td><td>4 datasets; CoT</td><td>35.6</td><td>36.5</td><td>+0.93</td><td>3/1/0</td></tr>
               </tbody>
             </table>
           </div>
-          <p class="note">This summary is organized with unified columns to avoid mixed numeric/text layouts and keep cross-backbone comparison visually consistent.</p>
+          <div class="table-scroll">
+            <table class="wide-table compact">
+              <thead>
+                <tr>
+                  <th>Backbone</th>
+                  <th>Panel</th>
+                  <th>ITI</th>
+                  <th>ActAdd</th>
+                  <th>STIR</th>
+                  <th>RISER</th>
+                  <th>LoTR</th>
+                  <th>Δ vs mean</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="best-row"><td>Llama-3.1-8B</td><td>5 datasets; CoT</td><td>53.0</td><td>52.8</td><td>51.8</td><td>51.9</td><td>55.2</td><td>+2.86</td></tr>
+                <tr><td>Qwen2.5-14B</td><td>6 datasets; SR</td><td>77.0</td><td>76.6</td><td>76.5</td><td>76.3</td><td>77.1</td><td>+0.51</td></tr>
+                <tr><td>Mixtral-8x7B</td><td>4 datasets; CoT</td><td>37.0</td><td>36.0</td><td>35.7</td><td>36.7</td><td>36.5</td><td>+0.16</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Top: matched Identity–LoTR macros with paired win/tie/loss counts. Bottom: all methods on shared examples per backbone; LoTR beats the four-method mean on every panel.</p>
         </div>
 
         <div id="panelBenchmarks" class="result-panel">
@@ -287,14 +328,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td>GSM8K</td><td>Mathematical reasoning</td><td>Exact Match</td><td>Arithmetic multi-step consistency.</td></tr>
-                <tr><td>MATH</td><td>Advanced math reasoning</td><td>Exact Match</td><td>Difficult symbolic derivation.</td></tr>
-                <tr><td>BoolQ</td><td>Reading comprehension</td><td>Exact Match</td><td>Boolean factual verification.</td></tr>
-                <tr><td>HumanEval</td><td>Code generation</td><td>Pass@1</td><td>Program correctness under reasoning wrappers.</td></tr>
-                <tr><td>MMLU</td><td>General knowledge</td><td>Exact Match</td><td>Cross-domain academic reasoning.</td></tr>
-                <tr><td>FOLIO</td><td>Formal logic</td><td>Exact Match</td><td>Logical entailment consistency.</td></tr>
-                <tr><td>HotpotQA</td><td>Multi-hop QA</td><td>F1</td><td>Long-range evidence aggregation.</td></tr>
-                <tr><td>NarrativeQA</td><td>Long-form QA</td><td>Exact Match</td><td>Narrative-level reasoning fidelity.</td></tr>
+                <tr><td>BoolQ</td><td>Boolean QA</td><td>Accuracy</td><td>Yes/no factual verification.</td></tr>
+                <tr><td>DROP</td><td>Discrete reasoning over text</td><td>Token-level F1</td><td>Numerical multi-span reading.</td></tr>
+                <tr><td>HumanEval</td><td>Code generation</td><td>Pass@1</td><td>Program correctness under wrappers.</td></tr>
+                <tr><td>QASC</td><td>Multi-hop science QA</td><td>Accuracy</td><td>Two-fact composition.</td></tr>
+                <tr><td>ScienceQA-text</td><td>Science QA</td><td>Accuracy</td><td>Grounded scientific reasoning.</td></tr>
+                <tr><td>MMLU</td><td>Broad-domain knowledge</td><td>Accuracy</td><td>Cross-domain academic reasoning.</td></tr>
+                <tr><td>NarrativeQA</td><td>Long-form QA</td><td>Token-level F1</td><td>Narrative-level reasoning fidelity.</td></tr>
+                <tr><td>FOLIO</td><td>Formal logic</td><td>Accuracy</td><td>Logical entailment consistency.</td></tr>
+                <tr><td>CODAH</td><td>Commonsense</td><td>Accuracy</td><td>Adversarial commonsense (Qwen panel).</td></tr>
+                <tr><td>HellaSwag</td><td>Commonsense completion</td><td>Accuracy</td><td>Sentence completion (Qwen panel).</td></tr>
               </tbody>
             </table>
           </div>
@@ -303,104 +346,78 @@
     </section>
 
     <section id="efficiency" class="container section">
-      <h2>Efficiency & Trade-off</h2>
+      <h2>Efficiency</h2>
       <article class="card">
-        <h3>Llama-3.1-8B Efficiency by Paradigm</h3>
+        <h3>Token Efficiency on the Primary Llama Panel</h3>
         <div class="table-scroll">
           <table class="wide-table compact">
             <thead>
               <tr>
-                <th>Paradigm</th>
-                <th>Baseline Tok / Lat</th>
-                <th>LoTR Tok / Lat</th>
-                <th>Latency change</th>
+                <th>Measure</th>
+                <th>Identity</th>
+                <th>LoTR</th>
+                <th>Relative change</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Vanilla</td><td>128.6 / 2.87s</td><td class="best">109.4 / 2.17s</td><td>-24.4%</td></tr>
-              <tr><td>Chain-of-Thought</td><td>258.0 / 5.79s</td><td>286.7 / 6.12s</td><td>+5.7%</td></tr>
-              <tr><td>Plan-and-Solve</td><td>196.0 / 5.69s</td><td>270.7 / 7.36s</td><td>+29.3%</td></tr>
-              <tr><td>Self-Refine</td><td>50.8 / 8.96s</td><td class="best">46.0 / 7.72s</td><td>-13.8%</td></tr>
-              <tr><td>Self-Consistency</td><td>242.1 / 18.95s</td><td class="best">256.4 / 15.86s</td><td>-16.3%</td></tr>
-              <tr><td>Best-of-N</td><td>242.2 / 16.73s</td><td class="best">255.6 / 15.68s</td><td>-6.3%</td></tr>
-              <tr><td>Constrained Beam</td><td>22.0 / 9.15s</td><td class="best">40.3 / 7.32s</td><td>-20.0%</td></tr>
-              <tr><td>MCTS</td><td>34.1 / 9.63s</td><td class="best">41.1 / 7.17s</td><td>-25.5%</td></tr>
+              <tr><td>Final call (completion tokens)</td><td>141.3</td><td class="best">140.7</td><td>−0.43%</td></tr>
+              <tr><td>All calls (work proxy for multi-call scaffolds)</td><td>382.4</td><td class="best">383.0</td><td>+0.15%</td></tr>
             </tbody>
           </table>
         </div>
+        <p class="note">Values are completion tokens, macro-averaged over eight datasets and eight paradigms.</p>
       </article>
-
-      <div class="grid2 tradeoff-grid">
-        <figure class="card figure-card tradeoff-card">
-          <img src="./assets/intro_main_paradigm_radar_three_models.png" alt="Paradigm-level accuracy profile across backbones" data-full="./assets/intro_main_paradigm_radar_three_models.png" loading="lazy">
-          <figcaption>Figure. Paradigm-level accuracy profile across three backbones.</figcaption>
-        </figure>
-        <figure class="card figure-card tradeoff-card">
-          <img src="./assets/tradeoff_llama_grouped6_lotr.png" alt="Llama tradeoff frontier" data-full="./assets/tradeoff_llama_grouped6_lotr.png" loading="lazy">
-          <figcaption>Figure. Accuracy-efficiency trade-off on Llama-3.1-8B.</figcaption>
-        </figure>
-        <figure class="card figure-card tradeoff-card">
-          <img src="./assets/tradeoff_qwen14b.png" alt="Qwen2.5-14B tradeoff frontier" data-full="./assets/tradeoff_qwen14b.png" loading="lazy">
-          <figcaption>Figure. Accuracy-efficiency trade-off on Qwen2.5-14B.</figcaption>
-        </figure>
-        <figure class="card figure-card tradeoff-card">
-          <img src="./assets/tradeoff_mixtral8x7b.png" alt="Mixtral-8x7B tradeoff frontier" data-full="./assets/tradeoff_mixtral8x7b.png" loading="lazy">
-          <figcaption>Figure. Accuracy-efficiency trade-off on Mixtral-8x7B.</figcaption>
-        </figure>
-      </div>
       <article class="card">
-        <h3>Trade-off Interpretation</h3>
+        <h3>Interpretation</h3>
         <ul>
-          <li>LoTR shifts the frontier by improving accuracy while keeping latency competitive, rather than simply increasing token budget.</li>
-          <li>The gain is most visible when wrappers are search-heavy: LoTR improves execution quality with smaller additional cost than brute-force scaling.</li>
-          <li>Cross-backbone consistency suggests routing-by-logic is a transferable control mechanism, not a single-model trick.</li>
+          <li>LoTR changes internal routing without adding sampling or search calls: accuracy rises <strong>+2.66 points</strong> while total completion tokens move only <strong>+0.15%</strong>.</li>
+          <li>The gain therefore comes from <strong>logic-indexed pathway reuse</strong>, not from a larger decoding budget or brute-force expansion.</li>
+          <li>Wall-clock timings are excluded because measurements come from heterogeneous shared experiment servers; tokens are the controlled decoding-work proxy.</li>
         </ul>
       </article>
     </section>
 
     <section id="ablation" class="container section">
-      <h2>Ablation & Stress Tests</h2>
+      <h2>Ablation & Robustness</h2>
       <article class="card">
-        <h3>Ablation (Llama-3.1-8B)</h3>
+        <h3>Aligned Mechanism Ablation (Llama-3.1-8B)</h3>
         <div class="table-scroll">
           <table class="wide-table compact">
             <thead>
               <tr>
                 <th>Variant</th>
-                <th>BoolQ Acc / Tok</th>
-                <th>MMLU Acc / Tok</th>
-                <th>HotpotQA Acc / Tok</th>
+                <th>BoolQ</th>
+                <th>DROP</th>
+                <th>ScienceQA-text</th>
+                <th>Avg.</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="best-row"><td>Full LoTR</td><td>60.5 / 93.3</td><td>43.2 / 139.4</td><td>21.0 / 137.5</td></tr>
-              <tr><td>Collapsed states (K=1)</td><td>60.1 / 93.6</td><td>42.8 / 139.3</td><td>21.0 / 139.1</td></tr>
-              <tr><td>Hard targets only</td><td>59.5 / 94.6</td><td>42.1 / 140.4</td><td>19.8 / 135.5</td></tr>
-              <tr><td>Shared probe across layers</td><td>60.4 / 92.3</td><td>42.9 / 140.5</td><td>21.0 / 136.0</td></tr>
-              <tr><td>One global template</td><td>58.8 / 92.6</td><td>41.8 / 138.9</td><td>21.3 / 138.1</td></tr>
-              <tr><td>Trajectory-level routing</td><td>59.1 / 93.2</td><td>42.9 / 138.7</td><td>21.8 / 136.7</td></tr>
-              <tr><td>No state-conditioned routing</td><td>58.8 / 93.0</td><td>43.1 / 140.0</td><td>21.4 / 138.3</td></tr>
+              <tr><td>Identity routing</td><td>75.0</td><td>11.7</td><td>73.4</td><td>53.4</td></tr>
+              <tr><td>Single state (true K=1)</td><td>72.9</td><td>16.3</td><td>71.7</td><td>53.6</td></tr>
+              <tr class="best-row"><td>Full LoTR (K=6)</td><td>79.4</td><td>13.9</td><td>76.2</td><td>56.5</td></tr>
             </tbody>
           </table>
         </div>
+        <p class="note">Averaged over Vanilla, CoT, SC, and Best-of-N on matched items. Full LoTR improves the panel macro by <strong>+3.12</strong> over Identity and <strong>+2.87</strong> over a true single-state controller — the gain is not recovered by one globally routed template.</p>
       </article>
 
       <div class="grid2">
         <figure class="card figure-card">
-          <img src="./assets/stress_llama_k_combo.png" alt="Stress test over cluster number K" data-full="./assets/stress_llama_k_combo.png" loading="lazy">
-          <figcaption>Figure. Stress test over number of logic clusters K.</figcaption>
+          <img src="./assets/iclr2027_measured_state_basis.png" alt="K ablation: Identity vs single-state vs LoTR K=6" data-full="./assets/iclr2027_measured_state_basis.png" loading="lazy">
+          <figcaption>Figure. State differentiation matters: collapsing the six states into one erases most of the gain.</figcaption>
         </figure>
         <figure class="card figure-card">
-          <img src="./assets/stress_llama_tau_combo.png" alt="Stress test over temperature tau" data-full="./assets/stress_llama_tau_combo.png" loading="lazy">
-          <figcaption>Figure. Stress test over soft-target temperature tau.</figcaption>
+          <img src="./assets/iclr2027_measured_probe_scale.png" alt="Probe-logit scale sensitivity" data-full="./assets/iclr2027_measured_probe_scale.png" loading="lazy">
+          <figcaption>Figure. Probe-scale sensitivity: the LoTR−Identity gain peaks at the deployed β = 0.50 and stays positive across a broad range.</figcaption>
         </figure>
       </div>
       <article class="card">
         <h3>Ablation Insight</h3>
         <ul>
-          <li>Removing state conditioning or collapsing the logic basis consistently hurts quality-efficiency balance.</li>
-          <li>Soft targets and localized layer-wise probes are important for stable performance across factual and multi-hop benchmarks.</li>
-          <li>Stress tests show LoTR is not knife-edge tuned: moderate K and tau ranges remain robust.</li>
+          <li>State diversity is load-bearing: a distinguishable six-state basis keeps the pathway templates discriminative.</li>
+          <li>Conditioning on the inferred state is what carries the gains — steering without reading the state fades to a generic tweak.</li>
+          <li>LoTR is not knife-edge tuned: it stays positive across a broad probe-scale range and different state counts.</li>
         </ul>
       </article>
     </section>
@@ -409,9 +426,9 @@
       <h2>Case Study</h2>
       <article class="card">
         <p>
-          Under the same Chain-of-Thought wrapper, LoTR maintains step-level constraint verification and avoids premature
-          answer commitment. The trajectory shows that improvements come from better internal pathway alignment, not from changing
-          the external reasoning script itself.
+          Under the same external wrapper, LoTR keeps step-level constraint verification and avoids premature answer commitment.
+          The trajectory shows that improvements come from better internal pathway alignment, not from changing the external
+          reasoning script itself.
         </p>
       </article>
       <figure class="card figure-card">
@@ -421,8 +438,8 @@
       <article class="card">
         <h3>Case Interpretation</h3>
         <p>
-          The qualitative trajectory shows LoTR does not replace the external wrapper; instead, it reduces internal pathway mismatch.
-          In practice this means fewer premature commitments and better late-step constraint verification under the same prompt scaffold.
+          LoTR does not replace the external wrapper; it reduces internal pathway mismatch. In practice this means fewer
+          premature commitments and better late-step constraint verification under the same prompt scaffold.
         </p>
       </article>
     </section>
@@ -432,7 +449,7 @@
       <div class="grid3">
         <article class="card resource-card">
           <h3>Video Tutorial</h3>
-          <p>A narrated, subtitled 4½-minute walkthrough of the problem, the idea, the method and the results.
+          <p>A narrated, subtitled ~3-minute walkthrough of the problem, the idea, the method and the results.
             <a class="contact-link" href="./tutorial.html">Watch it →</a></p>
         </article>
         <article class="card resource-card">
