@@ -135,6 +135,66 @@
 
     <section id="method" class="container section">
       <h2>Method</h2>
+
+      <style>
+      .llv{padding:20px 22px;margin:2px 0 26px}
+      .llv-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+      .llv-badge{font:700 11.5px/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#fff;
+        background:linear-gradient(120deg,var(--blue,#5b8def),var(--mint,#2bbf9e));padding:6px 13px;border-radius:999px}
+      .llv-sub{color:var(--ink-soft,#5a6b86);font-size:14px}
+      .llv-body{display:grid;grid-template-columns:1.08fr .92fr;gap:22px;align-items:start}
+      @media(max-width:860px){.llv-body{grid-template-columns:1fr}}
+      .llv-q{font-size:14px;color:var(--ink,#1a2740);margin:0 0 10px}
+      .llv-q b{display:inline-block;font:700 11px/1 Inter;letter-spacing:.08em;text-transform:uppercase;
+        color:var(--blue,#5b8def);margin-right:8px}
+      .llv-stream{position:relative}
+      .llv-chip{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:12px;
+        border:1px solid var(--line,rgba(100,130,170,.22));background:var(--panel,rgba(255,255,255,.9));
+        margin:8px 0;font-size:14px;line-height:1.45;opacity:0;transform:translateY(6px);
+        transition:opacity .4s,transform .4s,border-color .4s,box-shadow .4s}
+      .llv-chip.on{opacity:1;transform:none}
+      .llv-chip.cur{border-color:var(--blue,#5b8def);box-shadow:0 6px 20px rgba(91,141,239,.18)}
+      .llv-chip .n{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+        font:700 12px/1 Inter;color:#fff;background:#aeb9cc}
+      .llv-chip.cur .n{background:var(--blue,#5b8def)}
+      .llv-chip.ans .n{background:linear-gradient(120deg,var(--teal,#2bbf9e),var(--mint,#63dfbf))}
+      .llv-panel{border:1px solid var(--line,rgba(100,130,170,.22));border-radius:14px;padding:14px 16px;
+        background:var(--panel-2,rgba(249,254,251,.94));margin-bottom:14px}
+      .llv-panel h5{margin:0 0 11px;font:700 12.5px/1 Inter;color:var(--ink,#1a2740);letter-spacing:.01em}
+      .llv-states{display:flex;flex-direction:column;gap:8px}
+      .llv-st{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:9px;font-size:12px;color:var(--ink-soft,#5a6b86)}
+      .llv-st .lab{font-weight:700}
+      .llv-track{height:9px;border-radius:5px;background:rgba(130,150,180,.16);overflow:hidden}
+      .llv-track i{display:block;height:100%;width:0;border-radius:5px;transition:width .55s cubic-bezier(.2,.7,.2,1)}
+      .llv-headgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+      .llv-cell{aspect-ratio:1;border-radius:3px;background:rgba(130,150,180,.16);transition:background .55s cubic-bezier(.2,.7,.2,1)}
+      .llv-glab{display:flex;justify-content:space-between;font:600 10.5px/1 Inter;color:var(--ink-soft,#7f8ca6);margin-top:8px}
+      .llv-cap{margin:16px 2px 0;color:var(--ink-soft,#5a6b86);font-size:13.5px;line-height:1.6}
+      .llv-cap b{color:var(--ink,#1a2740)}
+      </style>
+      <figure class="card figure-card llv" aria-label="Live demonstration of LoTR logic-conditioned routing">
+        <div class="llv-head"><span class="llv-badge">LoTR · live</span>
+          <span class="llv-sub">watch one reasoning step get <b style="color:var(--blue,#5b8def)">routed</b> — the logic-state mixture re-blends cached head templates into the next step's gate</span></div>
+        <div class="llv-body">
+          <div class="llv-stream">
+            <p class="llv-q"><b>Ask</b><span id="llvQ"></span></p>
+            <div id="llvChips"></div>
+          </div>
+          <div class="llv-side">
+            <div class="llv-panel">
+              <h5>logic-state mixture q<sub>t</sub> &nbsp;(K = 6)</h5>
+              <div class="llv-states" id="llvStates"></div>
+            </div>
+            <div class="llv-panel">
+              <h5>routed head gate &nbsp;=&nbsp; &Sigma;<sub>k</sub> q<sub>t</sub>(k) · M<sub>k</sub></h5>
+              <div class="llv-headgrid" id="llvGrid"></div>
+              <div class="llv-glab"><span>layer × attention head</span><span id="llvStep">step 1</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="llv-cap">Each sentence boundary, a lightweight probe reads the current <b>logic-state mixture</b>; LoTR blends the cached per-state <b>head templates</b> into a soft gate over attention heads for the next step. Same prompt, same weights — only the <b>internal pathway</b> adapts.</p>
+      </figure>
+
       <div class="grid3 method-flow">
         <article class="card">
           <h3>1) Offline Logic Basis (K=6)</h3>
@@ -484,6 +544,81 @@
     <img id="lightboxImg" src="" alt="Expanded figure preview">
   </div>
 
+  <script>
+  /* LoTR live routing demo: a reasoning stream whose per-step logic-state mixture
+     re-blends six cached head templates into a live head-gate heatmap. */
+  (function(){
+    var chips=document.getElementById('llvChips'); if(!chips) return;
+    var qEl=document.getElementById('llvQ'), stEl=document.getElementById('llvStates'),
+        grid=document.getElementById('llvGrid'), stepEl=document.getElementById('llvStep');
+    var ROWS=4, COLS=10, N=ROWS*COLS;
+    var STATES=[
+      {n:'Explore',  c:[139,92,246]},
+      {n:'Recall',   c:[91,141,239]},
+      {n:'Verify',   c:[34,184,207]},
+      {n:'Compute',  c:[43,191,158]},
+      {n:'Compare',  c:[224,164,59]},
+      {n:'Resolve',  c:[229,115,155]}
+    ];
+    /* deterministic per-state templates: each state favours a distinct blob of heads */
+    function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    var rnd=mulberry(42);
+    var TPL=STATES.map(function(_,k){
+      var cr=rnd()*(ROWS-1), cc=rnd()*(COLS-1), s=0.9+rnd()*1.3, arr=[];
+      for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+        var d=Math.hypot(r-cr,(c-cc)*0.7);
+        var v=Math.exp(-(d*d)/(2*s*s))*(0.75+0.5*rnd());
+        arr.push(Math.min(1,v));
+      }
+      return arr;
+    });
+    var EX=[
+      {q:'A 5-pack is $20, a single is $5 — cheapest way to get 8?',
+       steps:[
+        ['Goal: 8 bottles at the lowest total cost.',           [.70,.15,.08,.04,.02,.01]],
+        ['One 5-pack covers 5 of them for $20.',                [.12,.50,.07,.29,.01,.01]],
+        ['3 more as singles cost 3 × $5 = $15.',                [.05,.12,.07,.71,.03,.02]],
+        ['So a 5-pack plus 3 singles is $35.',                  [.03,.08,.05,.55,.26,.03]],
+        ['All 8 as singles would instead be $40.',              [.02,.05,.27,.10,.46,.10]],
+        ['$35 — one 5-pack plus 3 singles.',                    [.02,.03,.35,.05,.10,.45]]
+       ]}
+    ];
+    var reduce=false; try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+    /* build static scaffolding */
+    var ex=EX[0]; qEl.textContent=ex.q;
+    var chipEls=ex.steps.map(function(s,k){var ans=k===ex.steps.length-1;
+      var d=document.createElement('div'); d.className='llv-chip'+(ans?' ans':'');
+      d.innerHTML='<span class="n">'+(ans?'✓':(k+1))+'</span><span>'+s[0]+'</span>';
+      chips.appendChild(d); return d;});
+    var barEls=STATES.map(function(s){var row=document.createElement('div'); row.className='llv-st';
+      row.innerHTML='<span class="lab" style="color:rgb('+s.c.join(',')+')">'+s.n+'</span><span class="llv-track"><i style="background:rgb('+s.c.join(',')+')"></i></span>';
+      stEl.appendChild(row); return row.querySelector('i');});
+    var cells=[]; for(var i=0;i<N;i++){var c=document.createElement('div'); c.className='llv-cell'; grid.appendChild(c); cells.push(c);}
+    function render(i){
+      var q=ex.steps[i][1];
+      chipEls.forEach(function(d,k){d.classList.toggle('on',k<=i); d.classList.toggle('cur',k===i);});
+      barEls.forEach(function(b,k){b.style.width=Math.round(q[k]*100)+'%';});
+      for(var n=0;n<N;n++){
+        var R=0,G=0,B=0,w=0,inten=0;
+        for(var k=0;k<STATES.length;k++){var g=q[k]*TPL[k][n]; inten+=g; R+=g*STATES[k].c[0]; G+=g*STATES[k].c[1]; B+=g*STATES[k].c[2]; w+=g;}
+        inten=Math.min(1,inten);
+        if(w>1e-4){R/=w;G/=w;B/=w;}
+        cells[n].style.background='rgba('+Math.round(R)+','+Math.round(G)+','+Math.round(B)+','+(0.12+0.85*inten).toFixed(3)+')';
+      }
+      stepEl.textContent='step '+(i+1)+(i===ex.steps.length-1?' · answer':'');
+    }
+    if(reduce){render(ex.steps.length-1); return;}
+    var i=0, timer=null;
+    function tick(){ render(i); i++; if(i<ex.steps.length){timer=setTimeout(tick,2100);} else {timer=setTimeout(function(){i=0;tick();},3400);} }
+    /* start when scrolled into view */
+    var started=false;
+    function start(){ if(started)return; started=true; tick(); }
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting){start();io.disconnect();}});},{threshold:.3});
+      io.observe(document.querySelector('.llv'));
+    } else start();
+  })();
+  </script>
   <script src="./script.js"></script>
   <script src="./enhance.js"></script>
 </body>
