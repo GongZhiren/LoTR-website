@@ -167,6 +167,8 @@
       .llv-track{height:9px;border-radius:5px;background:rgba(130,150,180,.16);overflow:hidden}
       .llv-track i{display:block;height:100%;width:0;border-radius:5px;transition:width .55s cubic-bezier(.2,.7,.2,1)}
       .llv-headgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+      .llv-twogrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+      .llv-gsub{font-size:10px;color:var(--ink-soft,#5a6b86);text-align:center;margin-top:6px;line-height:1.3}
       .llv-cell{aspect-ratio:1;border-radius:3px;background:rgba(130,150,180,.16);transition:background .55s cubic-bezier(.2,.7,.2,1)}
       .llv-glab{display:flex;justify-content:space-between;font:600 10.5px/1 Inter;color:var(--ink-soft,#7f8ca6);margin-top:8px}
       .llv-cap{margin:16px 2px 0;color:var(--ink-soft,#5a6b86);font-size:13.5px;line-height:1.6}
@@ -186,8 +188,11 @@
               <div class="llv-states" id="llvStates"></div>
             </div>
             <div class="llv-panel">
-              <h5>routed head gate &nbsp;=&nbsp; &Sigma;<sub>k</sub> q<sub>t</sub>(k) · M<sub>k</sub></h5>
-              <div class="llv-headgrid" id="llvGrid"></div>
+              <h5>internal pathway &mdash; <span style="color:#9aa7bb">fixed</span> &nbsp;vs&nbsp; <span style="color:var(--blue,#5b8def)">LoTR-routed</span> &nbsp;=&nbsp; &Sigma;<sub>k</sub> q<sub>t</sub>(k) · M<sub>k</sub></h5>
+              <div class="llv-twogrid">
+                <div><div class="llv-headgrid" id="llvFixed"></div><div class="llv-gsub">same gate every step &mdash; mismatched</div></div>
+                <div><div class="llv-headgrid" id="llvGrid"></div><div class="llv-gsub">re-blended to the step&rsquo;s logic</div></div>
+              </div>
               <div class="llv-glab"><span>layer × attention head</span><span id="llvStep">step 1</span></div>
             </div>
           </div>
@@ -594,6 +599,11 @@
       row.innerHTML='<span class="lab" style="color:rgb('+s.c.join(',')+')">'+s.n+'</span><span class="llv-track"><i style="background:rgb('+s.c.join(',')+')"></i></span>';
       stEl.appendChild(row); return row.querySelector('i');});
     var cells=[]; for(var i=0;i<N;i++){var c=document.createElement('div'); c.className='llv-cell'; grid.appendChild(c); cells.push(c);}
+    // fixed "one-size-fits-all" pathway: a single static gate (mean of templates), muted — never re-blends
+    var fixed=document.getElementById('llvFixed');
+    if(fixed){ for(var fn=0;fn<N;fn++){var fc=document.createElement('div'); fc.className='llv-cell';
+      var m=0; for(var fk=0;fk<STATES.length;fk++) m+=TPL[fk][fn]; m/=STATES.length;
+      fc.style.background='rgba(150,167,187,'+(0.14+m*0.5).toFixed(3)+')'; fixed.appendChild(fc); } }
     function render(i){
       var q=ex.steps[i][1];
       chipEls.forEach(function(d,k){d.classList.toggle('on',k<=i); d.classList.toggle('cur',k===i);});
