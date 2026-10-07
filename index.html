@@ -173,6 +173,12 @@
       .llv-glab{display:flex;justify-content:space-between;font:600 10.5px/1 Inter;color:var(--ink-soft,#7f8ca6);margin-top:8px}
       .llv-cap{margin:16px 2px 0;color:var(--ink-soft,#5a6b86);font-size:13.5px;line-height:1.6}
       .llv-cap b{color:var(--ink,#1a2740)}
+      .llv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+      @media(max-width:620px){.llv-stats{grid-template-columns:1fr}}
+      .llv-stat{border:1px solid var(--line,rgba(100,130,170,.22));border-radius:12px;padding:12px 14px;text-align:center;background:var(--panel,rgba(255,255,255,.9))}
+      .llv-stat .big{font:800 20px/1.05 Inter;color:var(--ink,#1a2740);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+      .llv-stat .big .t{color:var(--teal,#2bbf9e)}.llv-stat .big .p{color:#7b5cff}
+      .llv-stat .lab{font:600 10px/1.35 Inter;color:var(--ink-soft,#5a6b86);margin-top:5px}
       </style>
       <figure class="card figure-card llv" aria-label="Live demonstration of LoTR logic-conditioned routing">
         <div class="llv-head"><span class="llv-badge">LoTR · live</span>
@@ -196,6 +202,11 @@
               <div class="llv-glab"><span>layer × attention head</span><span id="llvStep">step 1</span></div>
             </div>
           </div>
+        </div>
+        <div class="llv-stats">
+          <div class="llv-stat"><div class="big"><span class="t">+2.66</span> pts</div><div class="lab">reasoning accuracy on an 8&times;8 Llama study</div></div>
+          <div class="llv-stat"><div class="big"><span class="p">+0.15%</span> tokens</div><div class="lab">routing overhead, essentially free at run time</div></div>
+          <div class="llv-stat"><div class="big">plug<span style="color:#7f8ca6">·</span>and<span style="color:#7f8ca6">·</span>play</div><div class="lab">frozen weights, no fine-tuning or retraining</div></div>
         </div>
         <p class="llv-cap">Each sentence boundary, a lightweight probe reads the current <b>logic-state mixture</b>; LoTR blends the cached per-state <b>head templates</b> into a soft gate over attention heads for the next step. Same prompt, same weights — only the <b>internal pathway</b> adapts.</p>
       </figure>
