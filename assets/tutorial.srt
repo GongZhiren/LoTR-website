@@ -23,54 +23,54 @@ So part of the benefit is lost — a strong procedure run by a static interior t
 LoTR's observation: reasoning isn't uniform inside. Different steps put the model into different logic states — recurring internal execution regimes.
 
 7
-00:00:57,208 --> 00:01:03,040
-And each paradigm occupies these states differently — logic is a shared internal basis.
+00:00:57,208 --> 00:01:05,392
+And every state recurs across many paradigms — logic is a shared internal basis, not a by-product of one strategy.
 
 8
-00:01:03,460 --> 00:01:12,316
+00:01:05,812 --> 00:01:14,668
 Each logic state couples to a distinct set of attention heads — a stable pathway template. Read the state, and you know which heads carry the next step.
 
 9
-00:01:12,736 --> 00:01:22,192
+00:01:15,088 --> 00:01:24,544
 Offline, LoTR pools step readouts across paradigms into six logic states, and a light linear probe learns to read the current state at each layer.
 
 10
-00:01:22,372 --> 00:01:30,412
-Then it learns one head-gating template per state — keeping heads that help success, damping those tied to failure — with the model frozen.
+00:01:24,724 --> 00:01:33,244
+Then, with the model frozen, it gradient-tunes one head-gate template per state — raising the likelihood of correct steps against incorrect ones.
 
 11
-00:01:30,832 --> 00:01:40,384
+00:01:33,664 --> 00:01:43,216
 Online, it's a simple plug-in. At each sentence boundary, the probe infers the state mixture and blends the cached templates into soft gates over attention heads.
 
 12
-00:01:40,564 --> 00:01:46,588
+00:01:43,396 --> 00:01:49,420
 The prompt and search stay untouched — only the internal pathway adapts, step by step.
 
 13
-00:01:47,008 --> 00:01:58,288
+00:01:49,840 --> 00:02:01,120
 Does it work? On eight benchmarks by eight paradigms, LoTR lifts the average by two-point-seven points — a five-point-four percent relative gain — and every benchmark improves.
 
 14
-00:01:58,468 --> 00:02:04,492
+00:02:01,300 --> 00:02:07,324
 It helps or ties in fifty-one of sixty-four cells — across every paradigm tested.
 
 15
-00:02:04,912 --> 00:02:16,048
+00:02:07,744 --> 00:02:18,880
 And it's almost free: no extra samples or search calls — total decoding tokens shift by just zero-point-one-five percent. The gain is from routing, not a bigger budget.
 
 16
-00:02:16,468 --> 00:02:27,292
+00:02:19,300 --> 00:02:30,124
 It transfers, too — plus two-point-one points on a fourteen-billion model, nearly a point on a mixture-of-experts model — and beats the mean of four intervention baselines on every backbone.
 
 17
-00:02:27,712 --> 00:02:36,976
-Why? Collapse the six states into one, or steer without reading the state, and the gains fade. It's the logic-indexed routing doing the work.
+00:02:30,544 --> 00:02:40,840
+Why? Collapse the six states into one and the gain disappears — and fixed, state-blind steering baselines trail it too. It's the logic-indexed routing doing the work.
 
 18
-00:02:37,396 --> 00:02:45,076
+00:02:41,260 --> 00:02:48,940
 The takeaway is a change of control: don't only prescribe how to reason — match the internal pathway to the logic each step needs.
 
 19
-00:02:45,256 --> 00:02:55,264
-LoTR reads the state, routes the right heads, and plugs into any reasoning paradigm — frozen, cheap, adaptive. Route the pathway to the logic.
+00:02:49,120 --> 00:02:59,392
+LoTR reads the state, routes the right heads, and plugs into existing reasoning paradigms — frozen, cheap, adaptive. Route the pathway to the logic.
 

@@ -56,8 +56,7 @@
         <div class="cta">
           <a class="btn" href="./tutorial.html">▶&nbsp; Watch the tutorial</a>
           <a class="btn btn-soft" href="#resources">Paper (coming soon)</a>
-          <a class="btn btn-soft" href="#resources">Code (coming soon)</a>
-          <button class="btn btn-soft" type="button" disabled>Cite (coming soon)</button>
+          <a class="btn btn-soft" href="https://github.com/GongZhiren/LoTR" target="_blank" rel="noreferrer">Code</a>
         </div>
       </div>
       <figure class="card figure-card hero-figure">
@@ -71,8 +70,8 @@
           <figcaption>Figure. Llama-3.1-8B matched macro across the eight reasoning paradigms — LoTR (solid) vs Identity (dashed).</figcaption>
         </figure>
         <figure class="card figure-card hero-mini-right">
-          <img src="./assets/intro_efficiency_tokens_latency_bar_line.png" alt="Matched-panel comparison: Identity, plug-in mean, and LoTR across three backbones" data-full="./assets/intro_efficiency_tokens_latency_bar_line.png" loading="lazy">
-          <figcaption>Figure. Matched panels across three backbones — Identity, four-method plug-in mean, and LoTR; lines show LoTR's margins over each.</figcaption>
+          <img src="./assets/intro_efficiency_tokens_latency_bar_line.png" alt="Reasoning tokens (bars) and latency (lines) across three backbones" data-full="./assets/intro_efficiency_tokens_latency_bar_line.png" loading="lazy">
+          <figcaption>Figure. LoTR improves reasoning without expanding inference cost — reasoning tokens (bars) and latency (lines) across the three backbones.</figcaption>
         </figure>
       </div>
       <div class="hero-insight grid2">
@@ -89,8 +88,9 @@
           <h3>Almost-Free Efficiency</h3>
           <p>
             LoTR adds <strong>no extra samples and no extra search calls</strong>. On the exact 64-cell panel it changes
-            total completion tokens by only <strong>+0.15%</strong> (final-call length <strong>−0.43%</strong>). The accuracy
-            gain comes from <strong>logic-indexed routing</strong>, not from a larger decoding budget.
+            total completion tokens by only <strong>+0.15%</strong> (final-call length <strong>−0.43%</strong>), with a
+            favorable latency profile across backbones. The accuracy gain comes from <strong>logic-indexed routing</strong>,
+            not from a larger decoding budget.
           </p>
         </article>
       </div>
@@ -103,7 +103,7 @@
       <article><h3>K=6</h3><p>Logic states</p></article>
       <article><h3>+2.66</h3><p>Llama macro gain (pts)</p></article>
       <article><h3>+5.37%</h3><p>Relative gain</p></article>
-      <article><h3>+0.15%</h3><p>Token overhead (all calls)</p></article>
+      <article><h3>+0.15%</h3><p>Completion-token change</p></article>
       <article><h3>+2.12</h3><p>Qwen2.5-14B transfer (pts)</p></article>
       <article><h3>+0.93</h3><p>Mixtral-8x7B transfer (pts)</p></article>
       <article><h3>+2.86</h3><p>vs. plug-in mean (Llama)</p></article>
@@ -127,7 +127,7 @@
         <p>
           Across three backbones, ten benchmarks, and eight reasoning paradigms, LoTR improves model-level matched macros by
           <strong>3.60% relative</strong> on average. On the primary eight-benchmark, eight-paradigm Llama study it gains
-          <strong>5.37%</strong> with only <strong>+0.15%</strong> total completion tokens, and it outperforms the mean of four
+          <strong>5.37%</strong> with only <strong>+0.15%</strong> total completion tokens and a favorable latency profile across backbones, and it outperforms the mean of four
           plug-in intervention baselines on all three comparison panels — all with <strong>frozen backbone weights</strong>.
         </p>
       </article>
@@ -205,10 +205,10 @@
         </div>
         <div class="llv-stats">
           <div class="llv-stat"><div class="big"><span class="t">+2.66</span> pts</div><div class="lab">reasoning accuracy on an 8&times;8 Llama study</div></div>
-          <div class="llv-stat"><div class="big"><span class="p">+0.15%</span> tokens</div><div class="lab">routing overhead, essentially free at run time</div></div>
+          <div class="llv-stat"><div class="big"><span class="p">+0.15%</span> tokens</div><div class="lab">change in total completion tokens</div></div>
           <div class="llv-stat"><div class="big">plug<span style="color:#7f8ca6">·</span>and<span style="color:#7f8ca6">·</span>play</div><div class="lab">frozen weights, no fine-tuning or retraining</div></div>
         </div>
-        <p class="llv-cap">Each sentence boundary, a lightweight probe reads the current <b>logic-state mixture</b>; LoTR blends the cached per-state <b>head templates</b> into a soft gate over attention heads for the next step. Same prompt, same weights — only the <b>internal pathway</b> adapts.</p>
+        <p class="llv-cap">Each sentence boundary, a lightweight probe reads the current <b>logic-state mixture</b>; LoTR blends the cached per-state <b>head templates</b> into a soft gate over attention heads for the next step. Same prompt, same weights — only the <b>internal pathway</b> adapts. <i>(Illustrative animation; state activations are non-exclusive and indices are unsupervised.)</i></p>
       </figure>
 
       <div class="grid3 method-flow">
@@ -224,7 +224,7 @@
         </article>
         <article class="card">
           <h3>3) Logic–Pathway Templates</h3>
-          <p>Learn one head-gating template per state — preserving heads that help successful reasoning, damping those tied to failures, with an identity regularizer — while the LM stays frozen.</p>
+          <p>Gradient-optimize one head-gate template per state — raising the likelihood of correct state-assigned sentences and contrasting it against incorrect ones, with an identity regularizer — while the LM, state basis, and probes stay frozen.</p>
           <p class="note">Output: cached per-state templates over the layer×head grid.</p>
         </article>
       </div>
@@ -246,7 +246,7 @@
         </figure>
         <figure class="card figure-card">
           <img src="./assets/k6_state_by_paradigm.png" alt="Logic-state occupancy by paradigm (K=6)" data-full="./assets/k6_state_by_paradigm.png" loading="lazy">
-          <figcaption>Figure. Occupancy of the six logic states by paradigm — some paradigms concentrate on a few states, others spread across many.</figcaption>
+          <figcaption>Figure. Cross-paradigm recurrence of the six logic states — each row shows how one state's readouts split across the eight paradigms; every state recurs under at least four of them.</figcaption>
         </figure>
       </div>
 
@@ -339,7 +339,7 @@
             </tbody>
           </table>
         </div>
-        <p class="note">Metrics are each benchmark's native score: accuracy (BoolQ, QASC, ScienceQA-text, MMLU, FOLIO), token-level F1 (DROP, NarrativeQA), and Pass@1 (HumanEval).</p>
+        <p class="note">Metrics are each benchmark's native score: accuracy (BoolQ, QASC, ScienceQA-text, MMLU, FOLIO), normalized F1 (DROP, NarrativeQA), and Pass@1 (HumanEval).</p>
       </article>
 
       <article class="card">
@@ -406,14 +406,14 @@
               </thead>
               <tbody>
                 <tr><td>BoolQ</td><td>Boolean QA</td><td>Accuracy</td><td>Yes/no factual verification.</td></tr>
-                <tr><td>DROP</td><td>Discrete reasoning over text</td><td>Token-level F1</td><td>Numerical multi-span reading.</td></tr>
+                <tr><td>DROP</td><td>Discrete reasoning over text</td><td>Normalized F1</td><td>Numerical multi-span reading.</td></tr>
                 <tr><td>HumanEval</td><td>Code generation</td><td>Pass@1</td><td>Program correctness under wrappers.</td></tr>
                 <tr><td>QASC</td><td>Multi-hop science QA</td><td>Accuracy</td><td>Two-fact composition.</td></tr>
                 <tr><td>ScienceQA-text</td><td>Science QA</td><td>Accuracy</td><td>Grounded scientific reasoning.</td></tr>
                 <tr><td>MMLU</td><td>Broad-domain knowledge</td><td>Accuracy</td><td>Cross-domain academic reasoning.</td></tr>
-                <tr><td>NarrativeQA</td><td>Long-form QA</td><td>Token-level F1</td><td>Narrative-level reasoning fidelity.</td></tr>
+                <tr><td>NarrativeQA</td><td>Long-form QA</td><td>Normalized F1</td><td>Narrative-level reasoning fidelity.</td></tr>
                 <tr><td>FOLIO</td><td>Formal logic</td><td>Accuracy</td><td>Logical entailment consistency.</td></tr>
-                <tr><td>CODAH</td><td>Commonsense</td><td>Accuracy</td><td>Adversarial commonsense (Qwen panel).</td></tr>
+                <tr><td>CODAH</td><td>Commonsense</td><td>Accuracy</td><td>Adversarial commonsense (Qwen &amp; Mixtral panels).</td></tr>
                 <tr><td>HellaSwag</td><td>Commonsense completion</td><td>Accuracy</td><td>Sentence completion (Qwen panel).</td></tr>
               </tbody>
             </table>
@@ -449,7 +449,7 @@
         <ul>
           <li>LoTR changes internal routing without adding sampling or search calls: accuracy rises <strong>+2.66 points</strong> while total completion tokens move only <strong>+0.15%</strong>.</li>
           <li>The gain therefore comes from <strong>logic-indexed pathway reuse</strong>, not from a larger decoding budget or brute-force expansion.</li>
-          <li>Wall-clock timings are excluded because measurements come from heterogeneous shared experiment servers; tokens are the controlled decoding-work proxy.</li>
+          <li>Latency, measured in paired runs under the same backbone-specific hardware and software, stays favorable across backbones; on Llama CoT it is comparable to ITI, ActAdd, and STIR and below RISER.</li>
         </ul>
       </article>
     </section>
@@ -486,7 +486,7 @@
         </figure>
         <figure class="card figure-card">
           <img src="./assets/probe_scale_sensitivity.png" alt="Probe-logit scale sensitivity" data-full="./assets/probe_scale_sensitivity.png" loading="lazy">
-          <figcaption>Figure. Probe-scale sensitivity: the LoTR−Identity gain peaks at the deployed β = 0.50 and stays positive across a broad range.</figcaption>
+          <figcaption>Figure. Probe-scale sensitivity: the LoTR−Identity gain peaks at the deployed β = 0.50 and stays positive throughout β ∈ [0.35, 0.65].</figcaption>
         </figure>
       </div>
       <article class="card">
@@ -494,7 +494,7 @@
         <ul>
           <li>State diversity is load-bearing: a distinguishable six-state basis keeps the pathway templates discriminative.</li>
           <li>Conditioning on the inferred state is what carries the gains — steering without reading the state fades to a generic tweak.</li>
-          <li>LoTR is not knife-edge tuned: it stays positive across a broad probe-scale range and different state counts.</li>
+          <li>LoTR is not knife-edge tuned: the gain stays positive throughout β ∈ [0.35, 0.65], and the multi-state K = 6 basis beats an independently compiled K = 1 basis.</li>
         </ul>
       </article>
     </section>
@@ -535,11 +535,12 @@
         </article>
         <article class="card resource-card">
           <h3>Code</h3>
-          <p>Coming soon.</p>
+          <p>Reference implementation: readout extraction, artifact compilation, and online routing.
+            <a class="contact-link" href="https://github.com/GongZhiren/LoTR" target="_blank" rel="noreferrer">GitHub →</a></p>
         </article>
         <article class="card resource-card">
           <h3>Citation</h3>
-          <p>Formal BibTeX will be released soon.</p>
+          <p>BibTeX will be released together with the paper.</p>
         </article>
       </div>
       <article class="card contact-card">
@@ -569,12 +570,12 @@
         grid=document.getElementById('llvGrid'), stepEl=document.getElementById('llvStep');
     var ROWS=4, COLS=10, N=ROWS*COLS;
     var STATES=[
-      {n:'Explore',  c:[139,92,246]},
-      {n:'Recall',   c:[91,141,239]},
-      {n:'Verify',   c:[34,184,207]},
-      {n:'Compute',  c:[43,191,158]},
-      {n:'Compare',  c:[224,164,59]},
-      {n:'Resolve',  c:[229,115,155]}
+      {n:'State 1',  c:[139,92,246]},
+      {n:'State 2',  c:[91,141,239]},
+      {n:'State 3',  c:[34,184,207]},
+      {n:'State 4',  c:[43,191,158]},
+      {n:'State 5',  c:[224,164,59]},
+      {n:'State 6',  c:[229,115,155]}
     ];
     /* deterministic per-state templates: each state favours a distinct blob of heads */
     function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
