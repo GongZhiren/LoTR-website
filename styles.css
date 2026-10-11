@@ -136,10 +136,19 @@ p, li { color: var(--ink-soft); }
   display: grid;
   grid-template-columns: 1.08fr 1fr;
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
   padding: 34px 0 16px;
 }
 .hero-bottom { grid-column: 1 / -1; }
+/* Fill the figure column to the text height and center the figure inside its
+   frame, so a short landscape figure leaves no blank gap beside the taller
+   text column. */
+.hero-figure {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+}
 
 .hero-insight {
   grid-column: 1 / -1;
