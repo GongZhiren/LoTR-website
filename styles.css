@@ -136,7 +136,7 @@ p, li { color: var(--ink-soft); }
   display: grid;
   grid-template-columns: 1.08fr 1fr;
   gap: 16px;
-  align-items: center;
+  align-items: start;
   padding: 34px 0 16px;
 }
 .hero-bottom { grid-column: 1 / -1; }
